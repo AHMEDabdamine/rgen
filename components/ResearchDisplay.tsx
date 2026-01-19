@@ -43,10 +43,10 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
       
       if (trimmed.startsWith('## ')) {
         if (inList) { html += '</ul>'; inList = false; }
-        html += `<h2 style="color: #1e1b4b; border-bottom: 2px solid #e0e7ff; padding-bottom: 4px; margin-top: 20px; margin-bottom: 10px; font-size: 1.4em;">${processScientificNotation(trimmed.replace('## ', ''))}</h2>`;
+        html += `<h2 style="color: #000; border-bottom: 2px solid #333; padding-bottom: 4px; margin-top: 20px; margin-bottom: 10px; font-size: 1.4em;">${processScientificNotation(trimmed.replace('## ', ''))}</h2>`;
       } else if (trimmed.startsWith('### ')) {
         if (inList) { html += '</ul>'; inList = false; }
-        html += `<h3 style="color: #1e293b; margin-top: 15px; margin-bottom: 8px; font-size: 1.2em;">${processScientificNotation(trimmed.replace('### ', ''))}</h3>`;
+        html += `<h3 style="color: #000; margin-top: 15px; margin-bottom: 8px; font-size: 1.2em;">${processScientificNotation(trimmed.replace('### ', ''))}</h3>`;
       } else if (trimmed.startsWith('- ')) {
         if (!inList) { html += `<ul style="margin-${direction === 'rtl' ? 'right' : 'left'}: 25px; margin-bottom: 10px;">`; inList = true; }
         html += `<li style="margin-bottom: 5px;">${processScientificNotation(trimmed.replace('- ', ''))}</li>`;
@@ -116,14 +116,14 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
     return content.split('\n').map((line, index) => {
       if (line.startsWith('## ')) {
         return (
-          <h2 key={index} className="font-bold text-indigo-900 mt-6 mb-3 border-b-2 border-indigo-100 pb-1" style={{ fontSize: '1.4em' }}>
+          <h2 key={index} className="font-bold text-indigo-900 print:text-black mt-6 mb-3 border-b-2 border-indigo-100 print:border-slate-400 pb-1" style={{ fontSize: '1.4em' }}>
             {renderFormattedLine(line.replace('## ', ''))}
           </h2>
         );
       }
       if (line.startsWith('### ')) {
         return (
-          <h3 key={index} className="font-bold text-slate-800 mt-4 mb-2" style={{ fontSize: '1.2em' }}>
+          <h3 key={index} className="font-bold text-slate-800 print:text-black mt-4 mb-2" style={{ fontSize: '1.2em' }}>
             {renderFormattedLine(line.replace('### ', ''))}
           </h3>
         );
@@ -133,13 +133,13 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
       }
       if (line.startsWith('- ')) {
         return (
-          <li key={index} className="mb-1 text-slate-700 list-disc ml-0 mr-0" style={{ [direction === 'rtl' ? 'marginRight' : 'marginLeft']: '1.5rem' }}>
+          <li key={index} className="mb-1 text-slate-700 print:text-black list-disc ml-0 mr-0" style={{ [direction === 'rtl' ? 'marginRight' : 'marginLeft']: '1.5rem' }}>
             {renderFormattedLine(line.replace('- ', ''))}
           </li>
         );
       }
       return (
-        <p key={index} className="text-slate-700 mb-2 text-justify">
+        <p key={index} className="text-slate-700 print:text-black mb-2 text-justify">
           {renderFormattedLine(line)}
         </p>
       );

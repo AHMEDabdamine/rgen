@@ -24,9 +24,27 @@
           display: block !important;
         }
         body {
-          background-color: white;
-          margin: 0;
-          padding: 0;
+          background-color: white !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        #root {
+          padding: 0 !important;
+          width: 100% !important;
+        }
+        /* Override the main App wrapper styles for printing */
+        #root > div {
+          background-color: white !important;
+          padding: 0 !important;
+          display: block !important;
+          min-height: auto !important;
+          width: 100% !important;
+        }
+        main {
+          max-width: 100% !important;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
         .research-paper {
           box-shadow: none !important;
@@ -34,9 +52,13 @@
           padding: 0 !important;
           width: 100% !important;
           max-width: 100% !important;
+          margin: 0 !important;
+          background: white !important;
         }
-        #root {
-            padding: 0 !important;
+        /* Ensure crisp print quality */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
         }
       }
     </style>
