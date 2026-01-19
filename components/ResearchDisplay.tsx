@@ -21,10 +21,12 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
   };
 
   /**
-   * Cleans Markdown symbols like **, *, and --- from text
+   * Cleans Markdown symbols like ** and * and --- from text
    */
   const stripMarkdownSymbols = (text: string): string => {
-    return text.replace(/\*\*|\*|---/g, '').trim();
+    return text
+      .replace(/---/g, '') // Remove horizontal line markers
+      .replace(/\*\*|\*/g, ''); // Remove bold/italic markers
   };
 
   const processScientificNotation = (text: string): string => {
@@ -38,29 +40,31 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
 
   const convertToHTML = (text: string) => {
     const lines = text.split('\n');
-    let html = `<div dir="${direction}" style="font-family: 'Arial', sans-serif; text-align: ${direction === 'rtl' ? 'right' : 'left'}; direction: ${direction}; font-size: ${fontSize}px; line-height: ${lineHeight}; color: black;">`;
+    let html = `<div dir="${direction}" style="font-family: 'Simplified Arabic', 'Traditional Arabic', serif; text-align: ${direction === 'rtl' ? 'right' : 'left'}; direction: ${direction}; font-size: ${fontSize}px; line-height: ${lineHeight}; color: #000000; background-color: #ffffff;">`;
     let inList = false;
 
     lines.forEach((line) => {
       const trimmed = line.trim();
+      if (trimmed === '---' || trimmed === '***' || trimmed === '___') return; // Skip horizontal lines
+
       const cleanLine = stripMarkdownSymbols(trimmed);
       const processedLine = processScientificNotation(cleanLine);
       
       if (trimmed.startsWith('## ')) {
         if (inList) { html += '</ul>'; inList = false; }
-        html += `<h2 style="color: #000; border-bottom: 2px solid #000; padding-bottom: 4px; margin-top: 18px; margin-bottom: 2px; font-size: 1.5em; font-weight: bold;">${processScientificNotation(stripMarkdownSymbols(trimmed.replace('## ', '')))}</h2>`;
+        html += `<h2 style="color: #000000; margin-top: 24px; margin-bottom: 8px; font-size: 1.5em; font-weight: bold;">${processScientificNotation(cleanLine.replace('## ', ''))}</h2>`;
       } else if (trimmed.startsWith('### ')) {
         if (inList) { html += '</ul>'; inList = false; }
-        html += `<h3 style="color: #000; margin-top: 14px; margin-bottom: 2px; font-size: 1.3em; font-weight: bold;">${processScientificNotation(stripMarkdownSymbols(trimmed.replace('### ', '')))}</h3>`;
+        html += `<h3 style="color: #000000; margin-top: 18px; margin-bottom: 6px; font-size: 1.3em; font-weight: bold;">${processScientificNotation(cleanLine.replace('### ', ''))}</h3>`;
       } else if (trimmed.startsWith('- ')) {
-        if (!inList) { html += `<ul style="margin-${direction === 'rtl' ? 'right' : 'left'}: 25px; margin-bottom: 8px; list-style-type: disc;">`; inList = true; }
-        html += `<li style="margin-bottom: 3px;">${processScientificNotation(cleanLine.replace('- ', ''))}</li>`;
-      } else if (trimmed === '' || trimmed === '---') {
+        if (!inList) { html += `<ul style="margin-${direction === 'rtl' ? 'right' : 'left'}: 25px; margin-bottom: 12px; list-style-type: disc; color: #000000;">`; inList = true; }
+        html += `<li style="margin-bottom: 6px;">${processScientificNotation(cleanLine.replace('- ', ''))}</li>`;
+      } else if (trimmed === '') {
         if (inList) { html += '</ul>'; inList = false; }
-        html += '<div style="height: 6px;"></div>';
+        html += '<div style="height: 12px;"></div>';
       } else {
         if (inList) { html += '</ul>'; inList = false; }
-        html += `<p style="margin-bottom: 8px; text-align: justify;">${processedLine}</p>`;
+        html += `<p style="margin-bottom: 12px; text-align: justify; color: #000000;">${processedLine}</p>`;
       }
     });
 
@@ -94,7 +98,7 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
         const formula = part.slice(1, -1);
         const subParts = formula.split(/(_[a-zA-Z0-9]+|\^[a-zA-Z0-9]+)/g);
         return (
-          <span key={i} dir="ltr" className="inline-block font-serif mx-0.5">
+          <span key={i} dir="ltr" className="inline-block font-serif mx-0.5 text-black">
             {subParts.map((sp, j) => {
               if (sp.startsWith('_')) return <sub key={j}>{sp.slice(1)}</sub>;
               if (sp.startsWith('^')) return <sup key={j}>{sp.slice(1)}</sup>;
@@ -111,30 +115,33 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
     return content.split('\n').map((line, index) => {
       const trimmed = line.trim();
       
+      // Skip horizontal lines
+      if (trimmed === '---' || trimmed === '***' || trimmed === '___') return null;
+
       if (trimmed.startsWith('## ')) {
         return (
-          <h2 key={index} className="font-bold text-indigo-900 print:text-black mt-6 mb-0.5 border-b-2 border-indigo-100 print:border-black pb-1" style={{ fontSize: '1.4em' }}>
+          <h2 key={index} className="font-bold text-black mt-8 mb-2" style={{ fontSize: '1.4em' }}>
             {renderFormattedLine(trimmed.replace('## ', ''))}
           </h2>
         );
       }
       if (trimmed.startsWith('### ')) {
         return (
-          <h3 key={index} className="font-bold text-slate-800 print:text-black mt-4 mb-0.5" style={{ fontSize: '1.2em' }}>
+          <h3 key={index} className="font-bold text-black mt-6 mb-2" style={{ fontSize: '1.2em' }}>
             {renderFormattedLine(trimmed.replace('### ', ''))}
           </h3>
         );
       }
-      if (trimmed === '' || trimmed === '---') return <div key={index} className="h-1" />;
+      if (trimmed === '') return <div key={index} className="h-2" />;
       if (trimmed.startsWith('- ')) {
         return (
-          <li key={index} className="mb-1 text-slate-700 print:text-black list-disc" style={{ [direction === 'rtl' ? 'marginRight' : 'marginLeft']: '1.5rem' }}>
+          <li key={index} className="mb-2 text-black list-disc" style={{ [direction === 'rtl' ? 'marginRight' : 'marginLeft']: '1.5rem' }}>
             {renderFormattedLine(trimmed.replace('- ', ''))}
           </li>
         );
       }
       return (
-        <p key={index} className="text-slate-700 print:text-black mb-2.5 text-justify leading-relaxed">
+        <p key={index} className="text-black mb-4 text-justify leading-relaxed">
           {renderFormattedLine(line)}
         </p>
       );
@@ -181,27 +188,25 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
         </div>
       </div>
 
-      <div className="research-paper bg-white p-8 md:p-16 rounded-xl shadow-xl border border-slate-200 min-h-[1000px] relative transition-all mx-auto academic-sheet" 
-           style={{ direction, textAlign: direction === 'rtl' ? 'right' : 'left', maxWidth: '210mm' }}>
+      <div className="research-paper bg-white p-8 md:p-12 rounded-xl shadow-xl border border-slate-200 min-h-[1000px] relative transition-all mx-auto academic-sheet" 
+           style={{ 
+             direction, 
+             textAlign: direction === 'rtl' ? 'right' : 'left', 
+             maxWidth: '210mm',
+             fontFamily: "'Simplified Arabic', 'Traditional Arabic', serif"
+           }}>
         
-        <div className="hidden print:flex flex-col items-center mb-6 border-b-4 border-double border-black pb-6">
-          <div className="w-full flex justify-between items-start text-sm font-bold mb-4">
-            <div className="text-right">المملكة العربية السعودية<br/>وزارة التعليم<br/>إدارة البحث العلمي</div>
-            <div className="text-center bg-slate-50 p-2 border border-black rounded shadow-sm">نموذج بحث مدرسي</div>
-            <div className="text-left">التاريخ: {new Date().toLocaleDateString('ar-EG')}<br/>المادة: بحث إثرائي</div>
-          </div>
-          <h1 className="text-3xl font-black mb-2 print:text-black">{topic}</h1>
+        {/* Print Header Removed to save space as requested */}
+
+        <div className="border-b-2 border-black pb-4 mb-6 text-center">
+          <h1 className="text-3xl font-black text-black mb-1">{topic}</h1>
         </div>
 
-        <div className="print:hidden border-b-2 border-slate-100 pb-4 mb-6 text-center">
-          <h1 className="text-3xl font-bold text-indigo-900 mb-1">{topic}</h1>
-        </div>
-
-        <article className="prose prose-slate prose-lg max-w-none print:text-black" style={{ fontSize: `${fontSize}px`, lineHeight, color: 'black' }}>
+        <article className="max-w-none text-black" style={{ fontSize: `${fontSize}px`, lineHeight, color: '#000000' }}>
           {renderContent()}
         </article>
 
-        <div className="hidden print:block mt-12 pt-6 border-t border-slate-300 text-[10px] text-slate-500 text-center italic">
+        <div className="hidden print:block mt-12 pt-4 border-t border-black text-[10px] text-black text-center italic">
           تم إعداد هذا التقرير البحثي آلياً عبر منصة مولد الأبحاث التربوية المتقدم.
         </div>
       </div>

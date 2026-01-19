@@ -2,21 +2,28 @@
 import { GoogleGenAI } from "@google/genai";
 import { ResearchRequest, ResearchLanguage } from "../types";
 
-export const generateResearchText = async (request: ResearchRequest): Promise<string> => {
-  // استخدام مفتاح API من البيئة مباشرة كما هو مطلوب
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+export const generateResearchText = async (request: ResearchRequest, apiKey: string): Promise<string> => {
+  if (!apiKey) {
+    throw new Error("يرجى إدخال مفتاح API في الإعدادات أولاً.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
   const isArabic = request.language === ResearchLanguage.ARABIC;
   
-  const systemInstruction = `أنت خبير في البحث التربوي والتعليمي.
+  const systemPrompt = `أنت خبير في البحث التربوي والتعليمي.
 مهمتك هي إنشاء نص بحث تعليمي منسق بشكل احترافي باللغة: [${request.language}].
 
 المعايير العامة:
 - الالتزام باللغة المختارة بدقة وبلاغة.
-- الالتزام التام باتجاه النص المناسب (RTL للعربية).
+- ${isArabic ? 'الالتزام التام باتجاه النص من اليمين إلى اليسار (RTL).' : 'استخدام اتجاه النص المناسب للغة المختارة.'}
 - استخدام العناوين الرئيسية بـ "##" والعناوين الفرعية بـ "###".
-- تقسيم الفقرات بفواصل واضحة.
+- تقسيم الفقرات بفواصل واضحة (أسطر فارغة).
 - الالتزام بالبنية الإجبارية: (المقدمة، العرض، الخاتمة).
-- تجنب استخدام الرموز التقنية مثل النجوم (*) أو الخطوط (---) في العناوين أو القوائم إلا للضرورة القصوى.
+
+قواعد التنسيق الصارمة:
+- ممنوع تماماً استخدام الخطوط الأفقية (---) أو أي رموز تشبه الخطوط الفاصلة.
+- ممنوع تماماً استخدام أي ألوان في النص؛ يجب أن يكون النص قابلاً للقراءة بلون أسود فقط.
+- لا تضف أي زخارف رسومية.
 
 قواعد المستوى التعليمي المستهدف [${request.level}]:
 - ابتدائي: جمل قصيرة، كلمات سهلة، شرح مباشر.
@@ -30,15 +37,17 @@ export const generateResearchText = async (request: ResearchRequest): Promise<st
 
 أخرج النص البحثي المنسق فقط بصيغة Markdown.`;
 
-  try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-pro-preview', // استخدام نسخة Pro لضمان جودة بحثية أعلى
-      contents: `أنشئ بحثاً تعليمياً حول الموضوع التالي: [${request.topic}]
+  const userPrompt = `أنشئ بحثاً تعليمياً حول الموضوع التالي: [${request.topic}]
 اللغة: [${request.language}]
 المستوى التعليمي المستهدف: [${request.level}]
-الطول المطلوب للبحث: [${request.length}]`,
+الطول المطلوب للبحث: [${request.length}]`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: userPrompt,
       config: {
-        systemInstruction: systemInstruction,
+        systemInstruction: systemPrompt,
         temperature: 0.7,
       },
     });
@@ -46,6 +55,6 @@ export const generateResearchText = async (request: ResearchRequest): Promise<st
     return response.text || "";
   } catch (error: any) {
     console.error("Gemini API Error:", error);
-    throw new Error("حدث خطأ أثناء توليد البحث. يرجى المحاولة مرة أخرى.");
+    throw new Error(error.message || "فشل في توليد البحث. تأكد من صحة مفتاح API.");
   }
 };

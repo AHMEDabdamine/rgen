@@ -10,56 +10,55 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
       body {
-        font-family: 'Tajawal', sans-serif;
+        font-family: 'Tajawal', 'Simplified Arabic', 'Traditional Arabic', serif;
         background-color: #f8fafc;
         -webkit-font-smoothing: antialiased;
       }
       
-      /* Print-specific Styles for A4 Paper */
+      /* Print-specific Styles optimized for Simplified Arabic and space saving */
       @media print {
         @page {
           size: A4;
-          margin: 1.5cm;
+          margin: 1cm; /* Reduced margin to save space */
         }
         .no-print {
           display: none !important;
-        }
-        .print-only {
-          display: block !important;
         }
         body {
           background-color: white !important;
           color: black !important;
           margin: 0 !important;
           padding: 0 !important;
+          font-family: 'Simplified Arabic', 'Traditional Arabic', "Times New Roman", serif !important;
         }
         #root, #root > div {
           padding: 0 !important;
           margin: 0 !important;
           display: block !important;
-          min-height: auto !important;
           width: 100% !important;
-          box-shadow: none !important;
-          background: white !important;
-        }
-        main {
-          max-width: 100% !important;
-          width: 100% !important;
-          margin: 0 !important;
-          padding: 0 !important;
         }
         .research-paper {
           box-shadow: none !important;
           border: none !important;
           padding: 0 !important;
+          margin: 0 !important;
           width: 100% !important;
           max-width: 100% !important;
-          margin: 0 !important;
-          background: white !important;
         }
-        h1, h2, h3, h4, p, li, span {
+        
+        /* Force 14pt font size for research content in print */
+        article, article p, article li {
+          font-size: 14pt !important;
+          line-height: 1.4 !important; /* Slightly tighter line height to save space */
           color: black !important;
+          margin-bottom: 8pt !important;
         }
+        
+        /* Compact headings for print */
+        h1 { font-size: 20pt !important; margin-bottom: 12pt !important; }
+        h2 { font-size: 16pt !important; margin-top: 14pt !important; margin-bottom: 6pt !important; }
+        h3 { font-size: 15pt !important; margin-top: 10pt !important; margin-bottom: 4pt !important; }
+        
         * {
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
