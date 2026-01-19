@@ -13,11 +13,13 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({ onSubmit, isLoading 
   const [level, setLevel] = useState<EducationalLevel>(EducationalLevel.PRIMARY);
   const [length, setLength] = useState<ResearchLength>(ResearchLength.SHORT);
   const [language, setLanguage] = useState<ResearchLanguage>(ResearchLanguage.ARABIC);
+  const [isCustomLevel, setIsCustomLevel] = useState(false);
+  const [isSingleParagraph, setIsSingleParagraph] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!topic.trim()) return;
-    onSubmit({ topic, level, length, language });
+    onSubmit({ topic, level, length, language, isCustomLevel, isSingleParagraph });
   };
 
   return (
@@ -34,7 +36,7 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({ onSubmit, isLoading 
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="space-y-2">
           <label className="block text-sm font-bold text-slate-700">لغة البحث</label>
           <select
@@ -49,11 +51,23 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({ onSubmit, isLoading 
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-bold text-slate-700">المستوى التعليمي</label>
+          <div className="flex justify-between items-center">
+            <label className="block text-sm font-bold text-slate-700">المستوى التعليمي</label>
+            <label className="flex items-center gap-1 cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={isCustomLevel} 
+                onChange={(e) => setIsCustomLevel(e.target.checked)}
+                className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+              />
+              <span className="text-xs text-slate-500">تلقائي</span>
+            </label>
+          </div>
           <select
             value={level}
             onChange={(e) => setLevel(e.target.value as EducationalLevel)}
-            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none bg-white cursor-pointer"
+            disabled={isCustomLevel}
+            className={`w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none bg-white cursor-pointer disabled:bg-slate-50 disabled:text-slate-400 transition-colors`}
           >
             {Object.values(EducationalLevel).map((lvl) => (
               <option key={lvl} value={lvl}>{lvl}</option>
@@ -72,6 +86,26 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({ onSubmit, isLoading 
               <option key={len} value={len}>{len}</option>
             ))}
           </select>
+        </div>
+
+        <div className="space-y-2">
+          <label className="block text-sm font-bold text-slate-700">تنسيق النص</label>
+          <div className="flex p-1 bg-slate-100 rounded-lg h-[50px]">
+            <button 
+              type="button"
+              onClick={() => setIsSingleParagraph(false)} 
+              className={`flex-1 py-1 rounded-md text-xs font-bold transition-all ${!isSingleParagraph ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              أقسام
+            </button>
+            <button 
+              type="button"
+              onClick={() => setIsSingleParagraph(true)} 
+              className={`flex-1 py-1 rounded-md text-xs font-bold transition-all ${isSingleParagraph ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              فقرة واحدة
+            </button>
+          </div>
         </div>
       </div>
 

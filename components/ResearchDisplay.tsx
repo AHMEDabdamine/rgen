@@ -5,6 +5,7 @@ import { Button } from './Button';
 interface ResearchDisplayProps {
   content: string;
   topic: string;
+  isCustomLevel?: boolean;
   onClear: () => void;
   onRegenerate: () => void;
   onExtend: () => void;
@@ -13,15 +14,16 @@ interface ResearchDisplayProps {
 
 export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ 
   content, 
-  topic, 
+  topic,
+  isCustomLevel,
   onClear, 
   onRegenerate, 
   onExtend,
   isLoading 
 }) => {
   const [isCopied, setIsCopied] = useState(false);
-  const [fontSize, setFontSize] = useState(18);
-  const [lineHeight, setLineHeight] = useState(1.6);
+  const [fontSize, setFontSize] = useState(14);
+  const [lineHeight, setLineHeight] = useState(1);
   const [direction, setDirection] = useState<'rtl' | 'ltr'>('rtl');
 
   const handlePrint = () => {
@@ -162,7 +164,10 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({
         <div className="flex flex-wrap gap-4 justify-between items-center">
           <div className="flex flex-col gap-1">
             <h3 className="font-bold text-slate-800">إدارة البحث: {topic}</h3>
-            <span className="text-xs text-slate-400">عدد الكلمات تقريباً: {content.split(/\s+/).length} كلمة</span>
+            <span className="text-xs text-slate-400">
+              عدد الكلمات تقريباً: {content.split(/\s+/).length} كلمة 
+              {isCustomLevel && " • مستوى تلقائي"}
+            </span>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={handleImageSearch} className="text-amber-600 border-amber-200 hover:bg-amber-50">
@@ -223,7 +228,7 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({
         
         <div className="border-b-2 border-black pb-4 mb-6 text-center">
           <h1 className="text-3xl font-black text-black mb-1">{topic}</h1>
-          <div className="text-sm text-black italic">بحث تربوي معد خصيصاً للمستوى {topic && "التعليمي المطلوب"}</div>
+          <div className="text-sm text-black italic">بحث تربوي معد خصيصاً {isCustomLevel ? "بأسلوب أكاديمي تلقائي" : `للمستوى ${topic && "التعليمي المطلوب"}`}</div>
         </div>
 
         <article className="max-w-none text-black" style={{ fontSize: `${fontSize}px`, lineHeight, color: '#000000' }}>

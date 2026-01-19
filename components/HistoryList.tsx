@@ -29,12 +29,15 @@ export const HistoryList: React.FC<HistoryListProps> = ({ history, onSelect, onD
           >
             <div>
               <div className="flex justify-between items-start mb-2">
-                <div className="flex gap-1">
+                <div className="flex flex-wrap gap-1">
                   <span className="text-[10px] font-bold px-1.5 py-0.5 bg-indigo-50 text-indigo-700 rounded-md">
-                    {item.level}
+                    {item.isCustomLevel ? 'تلقائي' : item.level}
                   </span>
                   <span className="text-[10px] font-bold px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded-md">
                     {item.language}
+                  </span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 bg-amber-50 text-amber-700 rounded-md">
+                    {item.isSingleParagraph ? 'فقرة واحدة' : 'أقسام'}
                   </span>
                 </div>
                 <span className="text-[10px] text-slate-400">

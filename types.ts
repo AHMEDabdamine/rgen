@@ -22,6 +22,8 @@ export interface ResearchRequest {
   level: EducationalLevel;
   length: ResearchLength;
   language: ResearchLanguage;
+  isCustomLevel: boolean;
+  isSingleParagraph: boolean;
 }
 
 export interface ResearchResponse {
