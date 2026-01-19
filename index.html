@@ -5,13 +5,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>مولد الأبحاث التربوية المتقدم</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind Play CDN for development and fast prototyping -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
       body {
         font-family: 'Tajawal', sans-serif;
         background-color: #f8fafc;
+        -webkit-font-smoothing: antialiased;
       }
+      
+      /* Print-specific Styles for A4 Paper */
       @media print {
         @page {
           size: A4;
@@ -25,20 +29,18 @@
         }
         body {
           background-color: white !important;
+          color: black !important;
           margin: 0 !important;
           padding: 0 !important;
         }
-        #root {
+        #root, #root > div {
           padding: 0 !important;
-          width: 100% !important;
-        }
-        /* Override the main App wrapper styles for printing */
-        #root > div {
-          background-color: white !important;
-          padding: 0 !important;
+          margin: 0 !important;
           display: block !important;
           min-height: auto !important;
           width: 100% !important;
+          box-shadow: none !important;
+          background: white !important;
         }
         main {
           max-width: 100% !important;
@@ -55,14 +57,16 @@
           margin: 0 !important;
           background: white !important;
         }
-        /* Ensure crisp print quality */
+        h1, h2, h3, h4, p, li, span {
+          color: black !important;
+        }
         * {
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
         }
       }
     </style>
-  <script type="importmap">
+    <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@19.0.0",
@@ -74,8 +78,10 @@
   }
 }
 </script>
-</head>
+  </head>
   <body>
     <div id="root"></div>
+    <!-- Load the main entry point of the application -->
+    <script type="module" src="index.tsx"></script>
   </body>
 </html>
