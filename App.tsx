@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { ResearchForm } from './components/ResearchForm';
 import { ResearchDisplay } from './components/ResearchDisplay';
 import { HistoryList } from './components/HistoryList';
-import { generateResearchText } from './services/geminiService';
+import { generateResearchText, extendResearchText } from './services/geminiService';
 import { ResearchRequest, SavedResearch } from './types';
 import { Button } from './components/Button';
 
@@ -69,6 +69,30 @@ const App: React.FC = () => {
       setIsLoading(false);
     }
   }, [apiKey, saveToHistory]);
+
+  const handleExtend = useCallback(async () => {
+    if (!researchContent || !lastRequest || !apiKey) return;
+
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const result = await extendResearchText(researchContent, lastRequest, apiKey);
+      setResearchContent(result);
+      
+      const newSavedItem: SavedResearch = {
+        ...lastRequest,
+        id: Date.now().toString(),
+        content: result,
+        timestamp: new Date().toISOString()
+      };
+      saveToHistory(newSavedItem);
+    } catch (err: any) {
+      setError(err.message || 'حدث خطأ أثناء توسيع البحث');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [researchContent, lastRequest, apiKey, saveToHistory]);
 
   const handleRegenerate = () => {
     if (lastRequest) handleGenerate(lastRequest);
@@ -153,6 +177,7 @@ const App: React.FC = () => {
             topic={lastRequest?.topic || ''} 
             onClear={handleClear} 
             onRegenerate={handleRegenerate}
+            onExtend={handleExtend}
             isLoading={isLoading}
           />
         )}

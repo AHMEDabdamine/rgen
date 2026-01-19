@@ -7,10 +7,18 @@ interface ResearchDisplayProps {
   topic: string;
   onClear: () => void;
   onRegenerate: () => void;
+  onExtend: () => void;
   isLoading: boolean;
 }
 
-export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic, onClear, onRegenerate, isLoading }) => {
+export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ 
+  content, 
+  topic, 
+  onClear, 
+  onRegenerate, 
+  onExtend,
+  isLoading 
+}) => {
   const [isCopied, setIsCopied] = useState(false);
   const [fontSize, setFontSize] = useState(18);
   const [lineHeight, setLineHeight] = useState(1.6);
@@ -20,13 +28,15 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
     window.print();
   };
 
-  /**
-   * Cleans Markdown symbols like ** and * and --- from text
-   */
+  const handleImageSearch = () => {
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(topic)}&tbm=isch`;
+    window.open(searchUrl, '_blank');
+  };
+
   const stripMarkdownSymbols = (text: string): string => {
     return text
-      .replace(/---/g, '') // Remove horizontal line markers
-      .replace(/\*\*|\*/g, ''); // Remove bold/italic markers
+      .replace(/---/g, '')
+      .replace(/\*\*|\*/g, '');
   };
 
   const processScientificNotation = (text: string): string => {
@@ -45,7 +55,7 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
 
     lines.forEach((line) => {
       const trimmed = line.trim();
-      if (trimmed === '---' || trimmed === '***' || trimmed === '___') return; // Skip horizontal lines
+      if (trimmed === '---' || trimmed === '***' || trimmed === '___') return;
 
       const cleanLine = stripMarkdownSymbols(trimmed);
       const processedLine = processScientificNotation(cleanLine);
@@ -114,13 +124,11 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
   const renderContent = () => {
     return content.split('\n').map((line, index) => {
       const trimmed = line.trim();
-      
-      // Skip horizontal lines
       if (trimmed === '---' || trimmed === '***' || trimmed === '___') return null;
 
       if (trimmed.startsWith('## ')) {
         return (
-          <h2 key={index} className="font-bold text-black mt-8 mb-2" style={{ fontSize: '1.4em' }}>
+          <h2 key={index} className="font-bold text-black mt-8 mb-2 border-b-2 border-slate-100 pb-2" style={{ fontSize: '1.4em' }}>
             {renderFormattedLine(trimmed.replace('## ', ''))}
           </h2>
         );
@@ -152,12 +160,29 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
     <div className="space-y-6">
       <div className="no-print bg-white p-6 rounded-xl shadow-sm border border-slate-100 space-y-6">
         <div className="flex flex-wrap gap-4 justify-between items-center">
-          <h3 className="font-bold text-slate-800">إدارة البحث: {topic}</h3>
+          <div className="flex flex-col gap-1">
+            <h3 className="font-bold text-slate-800">إدارة البحث: {topic}</h3>
+            <span className="text-xs text-slate-400">عدد الكلمات تقريباً: {content.split(/\s+/).length} كلمة</span>
+          </div>
           <div className="flex flex-wrap gap-2">
+            <Button variant="outline" onClick={handleImageSearch} className="text-amber-600 border-amber-200 hover:bg-amber-50">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              صور
+            </Button>
+            
+            <Button variant="secondary" onClick={onExtend} isLoading={isLoading} className="bg-violet-600 hover:bg-violet-700">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+              </svg>
+              توسيع وإثراء
+            </Button>
+
+            <Button variant="primary" onClick={onRegenerate} isLoading={isLoading}>توليد جديد</Button>
             <Button variant="secondary" onClick={handleCopy} disabled={isLoading}>
               {isCopied ? "تم النسخ" : "نسخ للورد"}
             </Button>
-            <Button variant="primary" onClick={onRegenerate} isLoading={isLoading}>توليد جديد</Button>
             <Button variant="outline" onClick={handlePrint} disabled={isLoading}>طباعة</Button>
             <Button variant="danger" onClick={onClear} disabled={isLoading}>إغلاق</Button>
           </div>
@@ -196,10 +221,9 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({ content, topic
              fontFamily: "'Simplified Arabic', 'Traditional Arabic', serif"
            }}>
         
-        {/* Print Header Removed to save space as requested */}
-
         <div className="border-b-2 border-black pb-4 mb-6 text-center">
           <h1 className="text-3xl font-black text-black mb-1">{topic}</h1>
+          <div className="text-sm text-black italic">بحث تربوي معد خصيصاً للمستوى {topic && "التعليمي المطلوب"}</div>
         </div>
 
         <article className="max-w-none text-black" style={{ fontSize: `${fontSize}px`, lineHeight, color: '#000000' }}>

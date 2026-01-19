@@ -58,3 +58,44 @@ export const generateResearchText = async (request: ResearchRequest, apiKey: str
     throw new Error(error.message || "فشل في توليد البحث. تأكد من صحة مفتاح API.");
   }
 };
+
+export const extendResearchText = async (currentContent: string, request: ResearchRequest, apiKey: string): Promise<string> => {
+  if (!apiKey) {
+    throw new Error("يرجى إدخال مفتاح API.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+  
+  const systemPrompt = `أنت باحث أكاديمي متخصص. لديك نص بحثي حالي، ومهمتك هي "توسيعه وإثراؤه" بشكل كبير.
+يجب عليك:
+1. الاحتفاظ بالهيكل العام (مقدمة، عرض، خاتمة).
+2. إضافة محاور جديدة كلياً في "العرض" لم تكن موجودة.
+3. إضافة تفاصيل دقيقة، إحصائيات تقريبية (إذا لزم)، أمثلة واقعية، وشروحات مطولة.
+4. مضاعفة حجم النص الحالي مع الحفاظ على المستوى التعليمي [${request.level}].
+5. التأكد من أن اللغة هي [${request.language}] وأن التنسيق Markdown سليم (## و ###).
+6. ممنوع استخدام الخطوط الفاصلة (---).
+
+أعد كتابة البحث بالكامل بالنسخة الجديدة المطولة والمثراة.`;
+
+  const userPrompt = `هذا هو البحث الحالي حول موضوع [${request.topic}]:
+---
+${currentContent}
+---
+قم بتوسيع هذا البحث وإضافة محتوى جديد ومفصل جداً يجعله بحثاً طويلاً وشاملاً.`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-pro-preview',
+      contents: userPrompt,
+      config: {
+        systemInstruction: systemPrompt,
+        temperature: 0.8,
+      },
+    });
+
+    return response.text || currentContent;
+  } catch (error: any) {
+    console.error("Gemini Extension Error:", error);
+    throw new Error("فشل في توسيع البحث. حاول مرة أخرى.");
+  }
+};
