@@ -1,20 +1,67 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# مولد الأبحاث التربوية المتقدم
 
-# Run and deploy your AI Studio app
+تطبيق ويب حديث لإنشاء الأبحاث التربوية باستخدام الذكاء الاصطناعي من Google Gemini.
 
-This contains everything you need to run your app locally.
+## المميزات
 
-View your app in AI Studio: https://ai.studio/apps/drive/135SA2cH6keIzYloNN62KjlATPHSS4pxq
+- إنشاء أبحاث تربوية مخصصة باستخدام الذكاء الاصطناعي
+- واجهة مستخدم عربية بالكامل
+- حفظ سجل الأبحاث السابقة
+- إمكانية توسيع الأبحاث الموجودة
 
-## Run Locally
+## المتطلبات
 
-**Prerequisites:**  Node.js
+- Node.js (إصدار 18 أو أحدث)
+- npm أو yarn
 
+## التثبيت والتشغيل
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1.  :
+```bash
+npm install
+```
+
+2. 
+```bash
+npm run dev
+```
+
+3. افتح المتصفح على العنوان: `http://localhost:3000`
+
+## بناء المشروع
+
+لإنشاء نسخة إنتاجية:
+```bash
+npm run build
+```
+
+## معاينة النسخة الإنتاجية
+
+لمعاينة النسخة المبنية:
+```bash
+npm run preview
+```
+
+## إعداد مفتاح API
+
+1. افتح التطبيق
+2. انقر على أيقونة الإعدادات
+3. أدخل مفتاح Google Gemini API الخاص بك
+
+## التقنيات المستخدمة
+
+- React 19
+- TypeScript
+- Vite
+- Google Gemini AI
+- TailwindCSS
+
+## هيكل المشروع
+
+```
+├── components/     # مكونات React
+├── services/       # خدمات API
+├── data/          # البيانات الثابتة
+├── types.ts       # تعريفات TypeScript
+└── App.tsx        # المكون الرئيسي
+```
