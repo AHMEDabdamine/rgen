@@ -1,20 +1,19 @@
-
 export enum EducationalLevel {
-  PRIMARY = 'ابتدائي',
-  INTERMEDIATE = 'متوسط',
-  SECONDARY = 'ثانوي'
+  PRIMARY = "ابتدائي",
+  INTERMEDIATE = "متوسط",
+  SECONDARY = "ثانوي",
 }
 
 export enum ResearchLength {
-  SHORT = 'قصير',
-  MEDIUM = 'متوسط',
-  LONG = 'طويل'
+  SHORT = "قصير",
+  MEDIUM = "متوسط",
+  LONG = "طويل",
 }
 
 export enum ResearchLanguage {
-  ARABIC = 'العربية',
-  ENGLISH = 'الإنجليزية',
-  FRENCH = 'الفرنسية'
+  ARABIC = "العربية",
+  ENGLISH = "الإنجليزية",
+  FRENCH = "الفرنسية",
 }
 
 export interface ResearchRequest {
@@ -24,6 +23,7 @@ export interface ResearchRequest {
   language: ResearchLanguage;
   isCustomLevel: boolean;
   isSingleParagraph: boolean;
+  additionalDetails?: string;
 }
 
 export interface ResearchResponse {

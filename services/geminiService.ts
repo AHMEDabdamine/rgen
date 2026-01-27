@@ -1,4 +1,3 @@
-
 import { GoogleGenAI } from "@google/genai";
 import { ResearchRequest, ResearchLanguage } from "../types";
 
@@ -11,29 +10,33 @@ interface ExternalResource {
 }
 
 // Fetch content from external resources
-const fetchExternalResources = async (topic: string, language: ResearchLanguage): Promise<ExternalResource[]> => {
+const fetchExternalResources = async (
+  topic: string,
+  language: ResearchLanguage,
+): Promise<ExternalResource[]> => {
   const resources: ExternalResource[] = [];
-  
+
   try {
     // Wikipedia API
-    const wikiUrl = language === ResearchLanguage.ARABIC 
-      ? `https://ar.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topic)}`
-      : `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topic)}`;
-    
+    const wikiUrl =
+      language === ResearchLanguage.ARABIC
+        ? `https://ar.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topic)}`
+        : `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topic)}`;
+
     const wikiResponse = await fetch(wikiUrl);
     if (wikiResponse.ok) {
       const wikiData = await wikiResponse.json();
-      if (wikiData.extract && !wikiData.extract.includes('does not exist')) {
+      if (wikiData.extract && !wikiData.extract.includes("does not exist")) {
         resources.push({
           title: wikiData.title || topic,
           content: wikiData.extract,
-          source: 'Wikipedia',
-          url: wikiData.content_urls?.desktop?.page || wikiUrl
+          source: "Wikipedia",
+          url: wikiData.content_urls?.desktop?.page || wikiUrl,
         });
       }
     }
   } catch (error) {
-    console.log('Wikipedia fetch failed:', error);
+    console.log("Wikipedia fetch failed:", error);
   }
 
   // Mawdoo3 (Arabic content platform)
@@ -45,11 +48,11 @@ const fetchExternalResources = async (topic: string, language: ResearchLanguage)
       resources.push({
         title: topic,
         content: `مصدر إضافي من الموضوع: ${topic} - يرجى الرجوع إلى موقع الموضوع (mawdoo3.com) للحصول على معلومات مفصلة وموثوقة باللغة العربية.`,
-        source: 'الموضوع',
-        url: 'https://mawdoo3.com'
+        source: "الموضوع",
+        url: "https://mawdoo3.com",
       });
     } catch (error) {
-      console.log('Mawdoo3 reference failed:', error);
+      console.log("Mawdoo3 reference failed:", error);
     }
   }
 
@@ -59,33 +62,41 @@ const fetchExternalResources = async (topic: string, language: ResearchLanguage)
     resources.push({
       title: `أبحاث أكاديمية حول: ${topic}`,
       content: `يُنصح بالرجوع إلى Google Scholar للبحث عن الأوراق البحثية والمصادر الأكاديمية الموثوقة حول موضوع: ${topic}. ابحث عن الدراسات الحديثة والمراجعات العلمية لتعزيز البحث بمعلومات دقيقة وموثوقة.`,
-      source: 'Google Scholar',
-      url: `https://scholar.google.com/scholar?q=${scholarQuery}`
+      source: "Google Scholar",
+      url: `https://scholar.google.com/scholar?q=${scholarQuery}`,
     });
   } catch (error) {
-    console.log('Google Scholar reference failed:', error);
+    console.log("Google Scholar reference failed:", error);
   }
 
   return resources;
 };
 
-export const generateResearchText = async (request: ResearchRequest, apiKey: string): Promise<string> => {
+export const generateResearchText = async (
+  request: ResearchRequest,
+  apiKey: string,
+): Promise<string> => {
   if (!apiKey) {
     throw new Error("يرجى إدخال مفتاح API في الإعدادات أولاً.");
   }
 
   const ai = new GoogleGenAI({ apiKey });
   const isArabic = request.language === ResearchLanguage.ARABIC;
-  const levelText = request.isCustomLevel ? "تلقائي (حدد المستوى الأنسب للموضوع بأسلوب أكاديمي رصين)" : request.level;
-  
-  const formatInstruction = request.isSingleParagraph 
+  const levelText = request.isCustomLevel
+    ? "تلقائي (حدد المستوى الأنسب للموضوع بأسلوب أكاديمي رصين)"
+    : request.level;
+
+  const formatInstruction = request.isSingleParagraph
     ? "اكتب البحث كاملاً كفقرة واحدة متصلة ومنسجمة دون أي عناوين جانبية أو تقسيمات. يجب أن يتدفق النص بسلاسة من المقدمة إلى الخاتمة في كتلة نصية واحدة."
     : "قسم البحث إلى مقدمة، وعرض (يحتوي على عناوين فرعية)، وخاتمة. استخدم العناوين الرئيسية بـ '##' والعناوين الفرعية بـ '###'.";
 
   // Fetch external resources for enhanced content
   let externalResourcesContext = "";
   try {
-    const resources = await fetchExternalResources(request.topic, request.language);
+    const resources = await fetchExternalResources(
+      request.topic,
+      request.language,
+    );
     if (resources.length > 0) {
       externalResourcesContext = "\n\n--- مصادر إضافية للإثراء ---\n";
       resources.forEach((resource, index) => {
@@ -96,7 +107,10 @@ export const generateResearchText = async (request: ResearchRequest, apiKey: str
       externalResourcesContext += "\n--- انتهت المصادر الإضافية ---\n\n";
     }
   } catch (error) {
-    console.log('Failed to fetch external resources, proceeding without them:', error);
+    console.log(
+      "Failed to fetch external resources, proceeding without them:",
+      error,
+    );
   }
 
   const systemPrompt = `أنت خبير في البحث التربوي والتعليمي مع إمكانية الوصول إلى مصادر معرفية موثوقة.
@@ -104,8 +118,8 @@ export const generateResearchText = async (request: ResearchRequest, apiKey: str
 
 المعايير العامة:
 - الالتزام باللغة المختارة بدقة وبلاغة.
-- ${isArabic ? 'الالتزام التام باتجاه النص من اليمين إلى اليسار (RTL).' : 'استخدام اتجاه النص المناسب للغة المختارة.'}
-- تقسيم الفقرات بفواصل واضحة (أسطر فارغة) ${request.isSingleParagraph ? 'فقط إذا كان ذلك ضرورياً جداً، والأفضل الالتزام بفقرة واحدة طويلة ومترابطة' : ''}.
+- ${isArabic ? "الالتزام التام باتجاه النص من اليمين إلى اليسار (RTL)." : "استخدام اتجاه النص المناسب للغة المختارة."}
+- تقسيم الفقرات بفواصل واضحة (أسطر فارغة) ${request.isSingleParagraph ? "فقط إذا كان ذلك ضرورياً جداً، والأفضل الالتزام بفقرة واحدة طويلة ومترابطة" : ""}.
 - ${formatInstruction}
 
 قواعد التنسيق الصارمة:
@@ -114,10 +128,14 @@ export const generateResearchText = async (request: ResearchRequest, apiKey: str
 - لا تضف أي زخارف رسومية.
 
 قواعد المستوى التعليمي المستهدف [${levelText}]:
-${!request.isCustomLevel ? `
+${
+  !request.isCustomLevel
+    ? `
 - ابتدائي: جمل قصيرة، كلمات سهلة، شرح مباشر.
 - متوسط: شرح أوضح مع أمثلة.
-- ثانوي: تحليل، تعليل، تنظيم منطقي عميق.` : '- قم بتكييف مستوى اللغة والعمق الأكاديمي بما يتناسب مع طبيعة الموضوع المختار بشكل احترافي.'}
+- ثانوي: تحليل، تعليل، تنظيم منطقي عميق.`
+    : "- قم بتكييف مستوى اللغة والعمق الأكاديمي بما يتناسب مع طبيعة الموضوع المختار بشكل احترافي."
+}
 
 قواعد الطول [${request.length}]:
 - قصير: محتوى مركز ومختصر.
@@ -137,15 +155,16 @@ ${!request.isCustomLevel ? `
 اللغة: [${request.language}]
 المستوى التعليمي المستهدف: [${levelText}]
 الطول المطلوب للبحث: [${request.length}]
-التنسيق المطلوب: [${request.isSingleParagraph ? 'فقرة واحدة متصلة' : 'أقسام مقسمة بعناوين'}]
+التنسيق المطلوب: [${request.isSingleParagraph ? "فقرة واحدة متصلة" : "أقسام مقسمة بعناوين"}]
+${request.additionalDetails ? `تفاصيل إضافية مطلوبة: [${request.additionalDetails}]` : ""}
 
 ${externalResourcesContext}
 
-الرجاء استخدام المعلومات من المصادر المذكورة أعلاه لإثراء البحث وجعله أكثر دقة وموثوقية.`;
+الرجاء استخدام المعلومات من المصادر المذكورة أعلاه لإثراء البحث وجعله أكثر دقة وموثوقية.${request.additionalDetails ? " وإيلاء اهتمام خاص للتفاصيل الإضافية المذكورة." : ""}`;
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: "gemini-3-flash-preview",
       contents: userPrompt,
       config: {
         systemInstruction: systemPrompt,
@@ -156,18 +175,24 @@ ${externalResourcesContext}
     return response.text || "";
   } catch (error: any) {
     console.error("Gemini API Error:", error);
-    throw new Error(error.message || "فشل في توليد البحث. تأكد من صحة مفتاح API.");
+    throw new Error(
+      error.message || "فشل في توليد البحث. تأكد من صحة مفتاح API.",
+    );
   }
 };
 
-export const extendResearchText = async (currentContent: string, request: ResearchRequest, apiKey: string): Promise<string> => {
+export const extendResearchText = async (
+  currentContent: string,
+  request: ResearchRequest,
+  apiKey: string,
+): Promise<string> => {
   if (!apiKey) {
     throw new Error("يرجى إدخال مفتاح API.");
   }
 
   const ai = new GoogleGenAI({ apiKey });
   const levelText = request.isCustomLevel ? "تلقائي" : request.level;
-  
+
   const formatExtInstruction = request.isSingleParagraph
     ? "حافظ على تنسيق الفقرة الواحدة المتصلة، ولكن قم بإطالتها وإثرائها بمعلومات وتفاصيل أكثر عمقاً."
     : "أضف محاور جديدة كلياً في 'العرض' لم تكن موجودة واستخدم العناوين (## و ###).";
@@ -175,7 +200,10 @@ export const extendResearchText = async (currentContent: string, request: Resear
   // Fetch additional external resources for extension
   let externalResourcesContext = "";
   try {
-    const resources = await fetchExternalResources(request.topic, request.language);
+    const resources = await fetchExternalResources(
+      request.topic,
+      request.language,
+    );
     if (resources.length > 0) {
       externalResourcesContext = "\n\n--- مصادر إضافية للتوسيع ---\n";
       resources.forEach((resource, index) => {
@@ -186,12 +214,12 @@ export const extendResearchText = async (currentContent: string, request: Resear
       externalResourcesContext += "\n--- انتهت المصادر الإضافية ---\n\n";
     }
   } catch (error) {
-    console.log('Failed to fetch external resources for extension:', error);
+    console.log("Failed to fetch external resources for extension:", error);
   }
 
   const systemPrompt = `أنت باحث أكاديمي متخصص مع إمكانية الوصول إلى مصادر معرفية موثوقة. لديك نص بحثي حالي، ومهمتك هي "توسيعه وإثراؤه" بشكل كبير.
 يجب عليك:
-1. ${request.isSingleParagraph ? 'الالتزام بفقرة واحدة مطولة' : 'الاحتفاظ بالهيكل العام (مقدمة، عرض، خاتمة)'}.
+1. ${request.isSingleParagraph ? "الالتزام بفقرة واحدة مطولة" : "الاحتفاظ بالهيكل العام (مقدمة، عرض، خاتمة)"}.
 2. ${formatExtInstruction}
 3. إضافة تفاصيل دقيقة، إحصائيات تقريبية (إذا لزم)، أمثلة واقعية، وشروحات مطولة.
 4. مضاعفة حجم النص الحالي مع الحفاظ على المستوى التعليمي [${levelText}].
@@ -207,14 +235,15 @@ export const extendResearchText = async (currentContent: string, request: Resear
 ---
 ${currentContent}
 ---
+${request.additionalDetails ? `تفاصيل إضافية مطلوبة: [${request.additionalDetails}]` : ""}
 
 ${externalResourcesContext}
 
-قم بتوسيع هذا البحث بشكل كبير وإضافة محتوى جديد ومفصل جداً باستخدام المعلومات من المصادر الموثوقة المذكورة أعلاه. أضف إحصائيات وحقائق وأمثلة واقعية مع الحفاظ على تنسيق [${request.isSingleParagraph ? 'فقرة واحدة' : 'أقسام'}].`;
+قم بتوسيع هذا البحث بشكل كبير وإضافة محتوى جديد ومفصل جداً باستخدام المعلومات من المصادر الموثوقة المذكورة أعلاه. أضف إحصائيات وحقائق وأمثلة واقعية مع الحفاظ على تنسيق [${request.isSingleParagraph ? "فقرة واحدة" : "أقسام"}].${request.additionalDetails ? " وتأكد من تغطية التفاصيل الإضافية المذكورة بعمق." : ""}`;
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-pro-preview',
+      model: "gemini-3-pro-preview",
       contents: userPrompt,
       config: {
         systemInstruction: systemPrompt,
