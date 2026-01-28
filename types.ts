@@ -24,6 +24,7 @@ export interface ResearchRequest {
   isCustomLevel: boolean;
   isSingleParagraph: boolean;
   additionalDetails?: string;
+  useExternalResources?: boolean;
 }
 
 export interface ResearchResponse {

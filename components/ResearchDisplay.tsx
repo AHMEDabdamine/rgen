@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "./Button";
 
 interface ResearchDisplayProps {
@@ -35,8 +35,51 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({
     return Math.ceil(exactPrice / 5) * 5;
   };
 
+  // Calculate estimated page count for printing
+  const calculatePageCount = (
+    wordCount: number,
+    fontSize: number,
+    lineHeight: number,
+  ): number => {
+    // A4 page dimensions: 210mm × 297mm with standard margins
+    // More realistic printable area for documents
+    const pageWidth = 170; // mm (after margins)
+    const pageHeight = 247; // mm (after margins)
+
+    // Convert mm to points for calculations (1mm = 2.83465 points)
+    const pageWidthPt = pageWidth * 2.83465;
+    const pageHeightPt = pageHeight * 2.83465;
+
+    // Calculate characters per line based on font size
+    // More sensitive to font size changes
+    const charWidth = fontSize * 0.48; // Increased to reduce words per line
+    const avgCharsPerLine = Math.floor(pageWidthPt / charWidth);
+
+    // Calculate lines per page based on font size and line height
+    const lineHeightPt = fontSize * lineHeight;
+    const linesPerPage = Math.floor(pageHeightPt / lineHeightPt);
+
+    // Estimate average words per line (more conservative estimate)
+    const avgWordsPerLine = Math.max(10, Math.floor(avgCharsPerLine / 7.2)); // 7.2 chars per word average
+
+    // Calculate total words per page
+    const wordsPerPage = avgWordsPerLine * linesPerPage;
+
+    // Calculate page count (minimum 1 page)
+    const pageCount = Math.ceil(wordCount / wordsPerPage);
+    return Math.max(1, pageCount);
+  };
+
   const wordCount = content.split(/\s+/).length;
   const estimatedPrice = calculatePrice(wordCount);
+  const pageCount = calculatePageCount(wordCount, fontSize, lineHeight);
+
+  // Initialize print font size when component mounts
+  useEffect(() => {
+    if (typeof window !== "undefined" && (window as any).updatePrintFontSize) {
+      (window as any).updatePrintFontSize(fontSize);
+    }
+  }, [fontSize]);
 
   const handlePrint = () => {
     window.print();
@@ -224,6 +267,10 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({
               <span className="text-green-600 font-bold">
                 السعر التقديري: {estimatedPrice} د.ج
               </span>
+              {" • "}
+              <span className="text-blue-600 font-bold">
+                صفحات الطباعة: {pageCount}
+              </span>
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -308,7 +355,17 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({
               min="12"
               max="32"
               value={fontSize}
-              onChange={(e) => setFontSize(parseInt(e.target.value))}
+              onChange={(e) => {
+                const newSize = parseInt(e.target.value);
+                setFontSize(newSize);
+                // Update print font size dynamically
+                if (
+                  typeof window !== "undefined" &&
+                  (window as any).updatePrintFontSize
+                ) {
+                  (window as any).updatePrintFontSize(newSize);
+                }
+              }}
               className="w-full h-2 bg-indigo-100 rounded-lg appearance-none cursor-pointer accent-indigo-600"
             />
           </div>
@@ -350,12 +407,13 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({
       </div>
 
       <div
-        className="research-paper bg-white p-8 md:p-12 rounded-xl shadow-xl border border-slate-200 min-h-[1000px] relative transition-all mx-auto academic-sheet"
+        className="research-paper bg-white p-8 md:p-12 rounded-xl shadow-xl border border-slate-200 relative transition-all mx-auto academic-sheet"
         style={{
           direction,
           textAlign: direction === "rtl" ? "right" : "left",
           maxWidth: "210mm",
           fontFamily: "'Simplified Arabic', 'Traditional Arabic', serif",
+          minHeight: "auto", // Remove fixed minimum height to prevent blank pages
         }}
       >
         <article

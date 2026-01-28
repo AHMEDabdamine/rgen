@@ -92,25 +92,27 @@ export const generateResearchText = async (
 
   // Fetch external resources for enhanced content
   let externalResourcesContext = "";
-  try {
-    const resources = await fetchExternalResources(
-      request.topic,
-      request.language,
-    );
-    if (resources.length > 0) {
-      externalResourcesContext = "\n\n--- مصادر إضافية للإثراء ---\n";
-      resources.forEach((resource, index) => {
-        externalResourcesContext += `\n${index + 1}. ${resource.source}: ${resource.title}\n`;
-        externalResourcesContext += `   المحتوى: ${resource.content}\n`;
-        externalResourcesContext += `   الرابط: ${resource.url}\n`;
-      });
-      externalResourcesContext += "\n--- انتهت المصادر الإضافية ---\n\n";
+  if (request.useExternalResources !== false) {
+    try {
+      const resources = await fetchExternalResources(
+        request.topic,
+        request.language,
+      );
+      if (resources.length > 0) {
+        externalResourcesContext = "\n\n--- مصادر إضافية للإثراء ---\n";
+        resources.forEach((resource, index) => {
+          externalResourcesContext += `\n${index + 1}. ${resource.source}: ${resource.title}\n`;
+          externalResourcesContext += `   المحتوى: ${resource.content}\n`;
+          externalResourcesContext += `   الرابط: ${resource.url}\n`;
+        });
+        externalResourcesContext += "\n--- انتهت المصادر الإضافية ---\n\n";
+      }
+    } catch (error) {
+      console.log(
+        "Failed to fetch external resources, proceeding without them:",
+        error,
+      );
     }
-  } catch (error) {
-    console.log(
-      "Failed to fetch external resources, proceeding without them:",
-      error,
-    );
   }
 
   const systemPrompt = `أنت خبير في البحث التربوي والتعليمي مع إمكانية الوصول إلى مصادر معرفية موثوقة.
@@ -199,22 +201,24 @@ export const extendResearchText = async (
 
   // Fetch additional external resources for extension
   let externalResourcesContext = "";
-  try {
-    const resources = await fetchExternalResources(
-      request.topic,
-      request.language,
-    );
-    if (resources.length > 0) {
-      externalResourcesContext = "\n\n--- مصادر إضافية للتوسيع ---\n";
-      resources.forEach((resource, index) => {
-        externalResourcesContext += `\n${index + 1}. ${resource.source}: ${resource.title}\n`;
-        externalResourcesContext += `   المحتوى: ${resource.content}\n`;
-        externalResourcesContext += `   الرابط: ${resource.url}\n`;
-      });
-      externalResourcesContext += "\n--- انتهت المصادر الإضافية ---\n\n";
+  if (request.useExternalResources !== false) {
+    try {
+      const resources = await fetchExternalResources(
+        request.topic,
+        request.language,
+      );
+      if (resources.length > 0) {
+        externalResourcesContext = "\n\n--- مصادر إضافية للتوسيع ---\n";
+        resources.forEach((resource, index) => {
+          externalResourcesContext += `\n${index + 1}. ${resource.source}: ${resource.title}\n`;
+          externalResourcesContext += `   المحتوى: ${resource.content}\n`;
+          externalResourcesContext += `   الرابط: ${resource.url}\n`;
+        });
+        externalResourcesContext += "\n--- انتهت المصادر الإضافية ---\n\n";
+      }
+    } catch (error) {
+      console.log("Failed to fetch external resources for extension:", error);
     }
-  } catch (error) {
-    console.log("Failed to fetch external resources for extension:", error);
   }
 
   const systemPrompt = `أنت باحث أكاديمي متخصص مع إمكانية الوصول إلى مصادر معرفية موثوقة. لديك نص بحثي حالي، ومهمتك هي "توسيعه وإثراؤه" بشكل كبير.

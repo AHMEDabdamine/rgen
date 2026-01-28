@@ -24,9 +24,10 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({
   const [language, setLanguage] = useState<ResearchLanguage>(
     ResearchLanguage.ARABIC,
   );
-  const [isCustomLevel, setIsCustomLevel] = useState(false);
+  const [isCustomLevel, setIsCustomLevel] = useState(true);
   const [isSingleParagraph, setIsSingleParagraph] = useState(false);
   const [additionalDetails, setAdditionalDetails] = useState("");
+  const [useExternalResources, setUseExternalResources] = useState(true);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +40,7 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({
       isCustomLevel,
       isSingleParagraph,
       additionalDetails,
+      useExternalResources,
     });
   };
 
@@ -72,6 +74,24 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({
           className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none h-24"
           rows={3}
         />
+      </div>
+
+      <div className="space-y-2">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={useExternalResources}
+            onChange={(e) => setUseExternalResources(e.target.checked)}
+            className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+          />
+          <span className="text-sm font-bold text-slate-700">
+            استخدام مصادر خارجية محسّنة (Wikipedia, موضوع, Google Scholar)
+          </span>
+        </label>
+        <p className="text-xs text-slate-500 mr-6">
+          عند التفعيل، سيقوم النظام بجمع معلومات من مصادر موثوقة لإثراء البحث
+          بالمحتوى الدقيق والأكاديمي
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
