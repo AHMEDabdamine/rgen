@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { ResearchForm } from "./components/ResearchForm";
 import { ResearchDisplay } from "./components/ResearchDisplay";
 import { HistoryList } from "./components/HistoryList";
+import { ThemeToggle } from "./components/ThemeToggle";
 import {
   generateResearchText,
   extendResearchText,
@@ -113,12 +114,13 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center py-10 px-4 relative">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center py-10 px-4 relative transition-colors">
       {/* Settings Button - Top Right */}
-      <div className="absolute top-6 right-6 no-print">
+      <div className="absolute top-6 right-6 no-print flex gap-2">
+        <ThemeToggle />
         <button
           onClick={() => setShowSettings(true)}
-          className="p-3 bg-white shadow-md rounded-full text-slate-600 hover:text-indigo-600 transition-colors border border-slate-100"
+          className="p-3 bg-white dark:bg-slate-800 shadow-md rounded-full text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors border border-slate-100 dark:border-slate-700"
           title="إعدادات API"
         >
           <svg
@@ -146,11 +148,11 @@ const App: React.FC = () => {
       {/* Settings Modal */}
       {showSettings && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 no-print">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
-            <h3 className="text-xl font-bold text-slate-800 mb-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4">
               إعدادات مفتاح API
             </h3>
-            <p className="text-slate-600 text-sm mb-4">
+            <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">
               أدخل مفتاح Google Gemini API الخاص بك. يتم تخزينه محلياً في متصفحك
               فقط.
             </p>
@@ -159,7 +161,7 @@ const App: React.FC = () => {
               placeholder="AIzaSy..."
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg mb-4 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg mb-4 outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100"
             />
             <div className="flex gap-2">
               <Button onClick={() => saveApiKey(apiKey)} className="flex-1">
@@ -181,9 +183,9 @@ const App: React.FC = () => {
       )}
 
       <header className="w-full max-w-4xl text-center mb-10 no-print">
-        <div className="inline-flex items-center justify-center p-3 bg-indigo-100 rounded-2xl mb-4">
+        <div className="inline-flex items-center justify-center p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl mb-4">
           <svg
-            className="w-10 h-10 text-indigo-600"
+            className="w-10 h-10 text-indigo-600 dark:text-indigo-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -196,10 +198,10 @@ const App: React.FC = () => {
             />
           </svg>
         </div>
-        <h1 className="text-4xl font-extrabold text-slate-900 mb-2">
+        <h1 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 mb-2">
           مولد الأبحاث التربوية المتقدم
         </h1>
-        <p className="text-lg text-slate-600">
+        <p className="text-lg text-slate-600 dark:text-slate-400">
           أداة تعليمية ذكية لمساعدة الطلاب على إعداد أبحاث مدرسية متميزة.
         </p>
       </header>
@@ -210,7 +212,7 @@ const App: React.FC = () => {
         )}
 
         {error && (
-          <div className="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-xl flex items-center justify-between gap-3 no-print">
+          <div className="bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 p-4 rounded-xl flex items-center justify-between gap-3 no-print">
             <div className="flex items-center gap-3">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path

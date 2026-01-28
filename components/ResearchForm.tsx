@@ -47,10 +47,10 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-6 rounded-xl shadow-md border border-slate-100 space-y-6 no-print"
+      className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 space-y-6 no-print"
     >
       <div className="space-y-2">
-        <label className="block text-sm font-bold text-slate-700">
+        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">
           موضوع البحث
         </label>
         <input
@@ -58,20 +58,20 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
           placeholder="مثال: أهمية الماء، تلوث البيئة، الفضاء..."
-          className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-lg"
+          className="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500"
           required
         />
       </div>
 
       <div className="space-y-2">
-        <label className="block text-sm font-bold text-slate-700">
+        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">
           تفاصيل إضافية (اختياري)
         </label>
         <textarea
           value={additionalDetails}
           onChange={(e) => setAdditionalDetails(e.target.value)}
           placeholder="أضف أي تفاصيل إضافية تود تضمينها في البحث مثل: نقاط محددة للتركيز عليها، أمثلة مطلوبة، جوانب معينة لتغطيتها..."
-          className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none h-24"
+          className="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none h-24 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500"
           rows={3}
         />
       </div>
@@ -82,13 +82,13 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({
             type="checkbox"
             checked={useExternalResources}
             onChange={(e) => setUseExternalResources(e.target.checked)}
-            className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+            className="w-4 h-4 text-indigo-600 rounded border-gray-300 dark:border-slate-600 focus:ring-indigo-500"
           />
-          <span className="text-sm font-bold text-slate-700">
+          <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
             استخدام مصادر خارجية محسّنة (Wikipedia, موضوع, Google Scholar)
           </span>
         </label>
-        <p className="text-xs text-slate-500 mr-6">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mr-6">
           عند التفعيل، سيقوم النظام بجمع معلومات من مصادر موثوقة لإثراء البحث
           بالمحتوى الدقيق والأكاديمي
         </p>
@@ -96,13 +96,13 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="space-y-2">
-          <label className="block text-sm font-bold text-slate-700">
+          <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">
             لغة البحث
           </label>
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value as ResearchLanguage)}
-            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none bg-white cursor-pointer"
+            className="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 cursor-pointer"
           >
             {Object.values(ResearchLanguage).map((lang) => (
               <option key={lang} value={lang}>
@@ -114,7 +114,7 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({
 
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <label className="block text-sm font-bold text-slate-700">
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">
               المستوى التعليمي
             </label>
             <label className="flex items-center gap-1 cursor-pointer">
@@ -122,16 +122,18 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({
                 type="checkbox"
                 checked={isCustomLevel}
                 onChange={(e) => setIsCustomLevel(e.target.checked)}
-                className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+                className="w-4 h-4 text-indigo-600 rounded border-gray-300 dark:border-slate-600 focus:ring-indigo-500"
               />
-              <span className="text-xs text-slate-500">تلقائي</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">
+                تلقائي
+              </span>
             </label>
           </div>
           <select
             value={level}
             onChange={(e) => setLevel(e.target.value as EducationalLevel)}
             disabled={isCustomLevel}
-            className={`w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none bg-white cursor-pointer disabled:bg-slate-50 disabled:text-slate-400 transition-colors`}
+            className={`w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 cursor-pointer disabled:bg-slate-50 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500 transition-colors`}
           >
             {Object.values(EducationalLevel).map((lvl) => (
               <option key={lvl} value={lvl}>
@@ -142,13 +144,13 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-bold text-slate-700">
+          <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">
             طول البحث
           </label>
           <select
             value={length}
             onChange={(e) => setLength(e.target.value as ResearchLength)}
-            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none bg-white cursor-pointer"
+            className="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 cursor-pointer"
           >
             {Object.values(ResearchLength).map((len) => (
               <option key={len} value={len}>
@@ -159,21 +161,21 @@ export const ResearchForm: React.FC<ResearchFormProps> = ({
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-bold text-slate-700">
+          <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">
             تنسيق النص
           </label>
-          <div className="flex p-1 bg-slate-100 rounded-lg h-[50px]">
+          <div className="flex p-1 bg-slate-100 dark:bg-slate-700 rounded-lg h-[50px]">
             <button
               type="button"
               onClick={() => setIsSingleParagraph(false)}
-              className={`flex-1 py-1 rounded-md text-xs font-bold transition-all ${!isSingleParagraph ? "bg-white shadow-sm text-indigo-600" : "text-slate-500 hover:text-slate-700"}`}
+              className={`flex-1 py-1 rounded-md text-xs font-bold transition-all ${!isSingleParagraph ? "bg-white dark:bg-slate-600 shadow-sm text-indigo-600" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"}`}
             >
               أقسام
             </button>
             <button
               type="button"
               onClick={() => setIsSingleParagraph(true)}
-              className={`flex-1 py-1 rounded-md text-xs font-bold transition-all ${isSingleParagraph ? "bg-white shadow-sm text-indigo-600" : "text-slate-500 hover:text-slate-700"}`}
+              className={`flex-1 py-1 rounded-md text-xs font-bold transition-all ${isSingleParagraph ? "bg-white dark:bg-slate-600 shadow-sm text-indigo-600" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"}`}
             >
               فقرة واحدة
             </button>

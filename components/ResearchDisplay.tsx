@@ -256,19 +256,21 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="no-print bg-white p-6 rounded-xl shadow-sm border border-slate-100 space-y-6">
+      <div className="no-print bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-6">
         <div className="flex flex-wrap gap-4 justify-between items-center">
           <div className="flex flex-col gap-1">
-            <h3 className="font-bold text-slate-800">إدارة البحث: {topic}</h3>
-            <span className="text-xs text-slate-400">
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">
+              إدارة البحث: {topic}
+            </h3>
+            <span className="text-xs text-slate-400 dark:text-slate-500">
               عدد الكلمات تقريباً: {wordCount} كلمة
               {isCustomLevel && " • مستوى تلقائي"}
               {" • "}
-              <span className="text-green-600 font-bold">
+              <span className="text-green-600 dark:text-green-400 font-bold">
                 السعر التقديري: {estimatedPrice} د.ج
               </span>
               {" • "}
-              <span className="text-blue-600 font-bold">
+              <span className="text-blue-600 dark:text-blue-400 font-bold">
                 صفحات الطباعة: {pageCount}
               </span>
             </span>
@@ -344,9 +346,9 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-100">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-100 dark:border-slate-700">
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-600 flex justify-between">
+            <label className="text-sm font-bold text-slate-600 dark:text-slate-300 flex justify-between">
               <span>حجم الخط</span>
               <span>{fontSize}px</span>
             </label>
@@ -366,11 +368,11 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({
                   (window as any).updatePrintFontSize(newSize);
                 }
               }}
-              className="w-full h-2 bg-indigo-100 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+              className="w-full h-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg appearance-none cursor-pointer accent-indigo-600"
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-600 flex justify-between">
+            <label className="text-sm font-bold text-slate-600 dark:text-slate-300 flex justify-between">
               <span>تباعد الأسطر</span>
               <span>{lineHeight}</span>
             </label>
@@ -381,23 +383,23 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({
               step="0.1"
               value={lineHeight}
               onChange={(e) => setLineHeight(parseFloat(e.target.value))}
-              className="w-full h-2 bg-indigo-100 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+              className="w-full h-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg appearance-none cursor-pointer accent-indigo-600"
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-600">
+            <label className="text-sm font-bold text-slate-600 dark:text-slate-300">
               اتجاه النص
             </label>
-            <div className="flex p-1 bg-slate-100 rounded-lg">
+            <div className="flex p-1 bg-slate-100 dark:bg-slate-700 rounded-lg">
               <button
                 onClick={() => setDirection("rtl")}
-                className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-all ${direction === "rtl" ? "bg-white shadow-sm text-indigo-600" : "text-slate-500"}`}
+                className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-all ${direction === "rtl" ? "bg-white dark:bg-slate-600 shadow-sm text-indigo-600" : "text-slate-500 dark:text-slate-400"}`}
               >
                 RTL
               </button>
               <button
                 onClick={() => setDirection("ltr")}
-                className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-all ${direction === "ltr" ? "bg-white shadow-sm text-indigo-600" : "text-slate-500"}`}
+                className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-all ${direction === "ltr" ? "bg-white dark:bg-slate-600 shadow-sm text-indigo-600" : "text-slate-500 dark:text-slate-400"}`}
               >
                 LTR
               </button>
