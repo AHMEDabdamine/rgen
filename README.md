@@ -1,122 +1,124 @@
-# مولد الأبحاث التربوية المتقدم
+# Research Generator
 
-تطبيق ويب حديث لإنشاء الأبحاث التربوية باستخدام الذكاء الاصطناعي من Google Gemini.
+A powerful research paper generation application built with React, TypeScript, and Google Gemini AI.
 
-## طرق التشغيل
+## 🚀 Running Methods
 
-يمكنك تشغيل التطبيق بثلاث طرق مختلفة:
+You can run the application in three different ways:
 
-1. **محلياً (Local)** - للتطوير
-2. **مع Docker** - للنشر والإنتاج
-3. **مع Tauri** - كتطبيق سطح مكتب
-
----
-
-## المتطلبات الأساسية
-
-### للجميع:
-
-- Node.js (إصدار 18 أو أحدث)
-- npm أو yarn
-
-### إضافية:
-
-- **Docker**: Docker و Docker Compose
-- **Tauri**: Rust وبيئة التطوير المناسبة لنظامك
+1. **Locally** - For development
+2. **With Docker** - For deployment and production
+3. **With Tauri** - As a desktop application
 
 ---
 
-## التشغيل المحلي (للتطوير)
+## 📋 Prerequisites
 
-### الخطوة 1: تثبيت الاعتماديات
+### For Everyone:
+
+- Node.js (version 18 or newer)
+- npm or yarn
+
+### Additional Requirements:
+
+- **Docker**: Docker and Docker Compose
+- **Tauri**: Rust and appropriate development environment for your system
+
+---
+
+## 💻 Local Development
+
+### Step 1: Install Dependencies
 
 ```bash
 npm install
 ```
 
-### الخطوة 2: تشغيل خادم التطوير
+### Step 2: Run Development Server
 
 ```bash
 npm run dev
 ```
 
-### الخطوة 3: فتح التطبيق
+### Step 3: Open Application
 
-افتح المتصفح على: `http://localhost:3000`
+Open your browser at: `http://localhost:3000`
 
-### الأوامر الأخرى:
+### Other Commands:
 
 ```bash
-# بناء المشروع للإنتاج
+# Build project for production
 npm run build
 
-# معاينة النسخة المبنية
+# Preview built version
 npm run preview
 
-# بناء وتشغيل في أمر واحد
+# Build and run in one command
 npm start
 ```
 
 ---
 
-## التشغيل مع Docker (للإنتاج)
+## 🐳 Running with Docker (Production)
 
-### الطريقة الأسهل - Docker Compose:
+### Easiest Method - Docker Compose:
 
 ```bash
-# بناء وتشغيل
+# Build and run
 docker-compose up --build
 
-# تشغيل في الخلفية
+# Run in background
 docker-compose up --build -d
 
-# إيقاف
+# Stop
 docker-compose down
 ```
 
-### الطريقة اليدوية - Docker مباشرة:
+### Manual Method - Docker Directly:
 
 ```bash
-# بناء الصورة
+# Build image
 docker build -t research-generator .
 
-# تشغيل الحاوية
+# Run container
 docker run -p 3000:3000 research-generator
 ```
 
-### الوصول للتطبيق:
+### Accessing Application:
 
-- **محلي**: http://localhost:3000
-- **شبكة**: http://your-server-ip:3000
+- **Local**: http://localhost:3000
+- **Network**: http://your-server-ip:3000
 
 ---
 
-## التشغيل مع Tauri (تطبيق سطح مكتب)
+## 🖥️ Running with Tauri (Desktop Application)
 
-### تثبيت متطلبات Tauri:
+### Install Tauri Requirements:
 
 **Windows:**
 
 ```bash
-# تثبيت Visual Studio Build Tools
-# تثبيت Rust من https://rustup.rs/
+# Install Visual Studio Build Tools
+# Install Rust from https://rustup.rs/
 ```
 
 **macOS:**
 
 ```bash
-# تثبيت Xcode Command Line Tools
+# Install Xcode Command Line Tools
 xcode-select --install
-# تثبيت Rust
+
+# Install Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
 **Linux:**
 
 ```bash
-# تثبيت Rust
+# Install Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-# تثبيت متطلبات النظام
+
+# Install system requirements
 sudo apt update
 sudo apt install libwebkit2gtk-4.0-dev \
     build-essential \
@@ -128,25 +130,25 @@ sudo apt install libwebkit2gtk-4.0-dev \
     librsvg2-dev
 ```
 
-### تشغيل تطبيق Tauri:
+### Running Tauri Application:
 
-**وضع التطوير:**
+**Development Mode:**
 
 ```bash
 npm run tauri dev
 ```
 
-**بناء التطبيق:**
+**Build Application:**
 
 ```bash
-# بناء للنظام الحالي
+# Build for current system
 npm run tauri build
 
-# بناء لجميع الأنظمة
+# Build for all systems
 npm run tauri build -- --target all
 ```
 
-**ملفات التطبيق المبنية:**
+**Built Application Files:**
 
 - **Windows**: `src-tauri/target/release/bundle/msi/`
 - **macOS**: `src-tauri/target/release/bundle/macos/`
@@ -154,38 +156,38 @@ npm run tauri build -- --target all
 
 ---
 
-## إعداد مفتاح API
+## 🔑 API Key Setup
 
-### لجميع الطرق:
+### For All Methods:
 
-1. افتح التطبيق
-2. انقر على أيقونة الإعدادات (الترس في أعلى اليمين)
-3. أدخل مفتاح Google Gemini API الخاص بك
-4. احفظ المفتاح
+1. Open the application
+2. Click on the settings icon (gear in top right)
+3. Enter your Google Gemini API key
+4. Save the key
 
-**الحصول على مفتاح API:**
+**Getting an API Key:**
 
-1. اذهب إلى [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. أنشئ مفتاح API جديد
-3. انسخ المفتاح وألصقه في التطبيق
+1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Create a new API key
+3. Copy the key and paste it in the application
 
 ---
 
-## ملاحظات تقنية
-
-### هيكل المشروع:
+## 📁 Project Structure
 
 ```
-├── components/          # مكونات React
-├── services/           # خدمات API
-├── hooks/              # React Hooks مخصصة
-├── src-tauri/          # كود تطبيق سطح المكتب
-├── Dockerfile          # إعدادات Docker
-├── docker-compose.yml  # إعدادات Docker Compose
-└── types.ts           # تعريفات TypeScript
+├── components/          # React components
+├── services/           # API services
+├── hooks/              # Custom React Hooks
+├── src-tauri/          # Desktop app code
+├── Dockerfile          # Docker configuration
+├── docker-compose.yml  # Docker Compose configuration
+└── types.ts           # TypeScript definitions
 ```
 
-### التقنيات المستخدمة:
+---
+
+## 🛠️ Technologies Used
 
 - **Frontend**: React 19 + TypeScript + Vite
 - **Styling**: TailwindCSS + Dark Mode
@@ -195,51 +197,67 @@ npm run tauri build -- --target all
 
 ---
 
-## حل المشاكل
+## 🔧 Troubleshooting
 
-### مشاكل شائعة:
+### Common Issues:
 
-**المنفذ 3000 مشغول:**
+**Port 3000 is busy:**
 
 ```bash
-# تغيير المنفذ في vite.config.ts
+# Change port in vite.config.ts
 server: {
-  port: 3001, // أو أي منفذ آخر
+  port: 3001, // or any other port
 }
 ```
 
-**مشاكل Docker:**
+**Docker Issues:**
 
 ```bash
-# تنظيف الحاويات القديمة
+# Clean old containers
 docker system prune -a
 
-# إعادة بناء الصورة
+# Rebuild image
 docker-compose build --no-cache
 ```
 
-**مشاكل Tauri:**
+**Tauri Issues:**
 
 ```bash
-# تحديث الاعتماديات
+# Update dependencies
 npm update
 
-# تنظيف وبناء من جديد
+# Clean and rebuild
 npm run tauri build -- --clean
 ```
 
 ---
 
-## خلاصة سريعة
+## 📊 Quick Summary
 
-| الطريقة    | الاستخدام | الأمر                       |
-| ---------- | --------- | --------------------------- |
-| **محلي**   | تطوير     | `npm run dev`               |
-| **Docker** | إنتاج     | `docker-compose up --build` |
-| **Tauri**  | سطح مكتب  | `npm run tauri dev`         |
+| Method     | Usage       | Command                     |
+| ---------- | ----------- | --------------------------- |
+| **Local**  | Development | `npm run dev`               |
+| **Docker** | Production  | `docker-compose up --build` |
+| **Tauri**  | Desktop     | `npm run tauri dev`         |
 
-اختر الطريقة التي تناسب احتياجاتك:
+---
 
-- **محلي**: للتطوير والتعديل
-- **Docker**: للنشر والخوادم
-- **Tauri**: لتطبيق سطح مكتب مستقل
+## 🎯 Choose Your Method
+
+- **Local**: Best for development and modification
+- **Docker**: Best for deployment and servers
+- **Tauri**: Best for standalone desktop application
+
+---
+
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+## 📧 Support
+
+If you have any questions or need help, please open an issue on GitHub.
