@@ -30,11 +30,20 @@
       @media print {
         @page {
           size: A4;
-          margin: 1cm; /* Reduced margin to save space */
+          margin: 5mm; /* Very small margins for maximum content */
         }
+
+        /* Hide everything except the research paper */
+        body > *:not(.research-paper),
         .no-print {
           display: none !important;
         }
+
+        /* Show only the research paper and its content */
+        .research-paper {
+          display: block !important;
+        }
+
         body {
           background-color: white !important;
           color: black !important;
@@ -48,79 +57,154 @@
           padding: 0 !important;
           margin: 0 !important;
           display: block !important;
-          width: 100% !important;
         }
+
         .research-paper {
+          margin: 0 !important;
+          padding: 8mm !important; /* Very small padding to match page margins */
+          background: white !important;
           box-shadow: none !important;
           border: none !important;
-          padding: 0 !important;
-          margin: 0 !important;
-          width: 100% !important;
+          border-radius: 0 !important; /* Remove border radius for print */
           max-width: 100% !important;
-        }
-
-        /* Dynamic font size for research content in print - controlled by slider */
-        article,
-        article p,
-        article li {
-          line-height: 1.4 !important; /* Slightly tighter line height to save space */
-          color: black !important;
-          margin-bottom: 8pt !important;
-        }
-
-        /* Dynamic headings for print that scale with base font size */
-        h1 {
-          font-size: 20pt !important;
-          margin-bottom: 12pt !important;
-        }
-        h2 {
-          font-size: 16pt !important;
-          margin-top: 14pt !important;
-          margin-bottom: 6pt !important;
-        }
-        h3 {
-          font-size: 15pt !important;
-          margin-top: 10pt !important;
-          margin-bottom: 4pt !important;
-        }
-
-        * {
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
-        }
-
-        /* Prevent blank pages and optimize page breaks */
-        .research-paper {
+          width: 100% !important;
           page-break-inside: avoid !important;
           orphans: 3 !important;
           widows: 3 !important;
         }
 
+        /* Force black text on white background */
+        .research-paper *,
+        .research-paper *::before,
+        .research-paper *::after {
+          color: black !important;
+          background: white !important;
+          border-color: black !important;
+          box-shadow: none !important;
+          text-shadow: none !important;
+        }
+
+        /* Remove all dark mode colors */
+        .dark,
+        .dark *,
+        [class*="dark"] {
+          color: black !important;
+          background: white !important;
+        }
+
+        /* Article content styling */
+        article {
+          color: black !important;
+          background: white !important;
+          font-size: 14pt !important;
+          line-height: 1.5 !important;
+          text-align: justify !important;
+        }
+
+        article h1 {
+          font-size: 20pt !important;
+          color: black !important;
+          background: white !important;
+          margin-top: 20pt !important;
+          margin-bottom: 14pt !important;
+          text-align: center !important;
+          font-weight: bold !important;
+        }
+
+        article h2 {
+          font-size: 16pt !important;
+          color: black !important;
+          background: white !important;
+          margin-top: 14pt !important;
+          margin-bottom: 6pt !important;
+          font-weight: bold !important;
+        }
+
+        article h3 {
+          font-size: 15pt !important;
+          color: black !important;
+          background: white !important;
+          margin-top: 10pt !important;
+          margin-bottom: 4pt !important;
+          font-weight: bold !important;
+        }
+
+        article p {
+          color: black !important;
+          background: white !important;
+          margin-bottom: 8pt !important;
+          text-indent: 0 !important;
+        }
+
+        article ul,
+        article ol {
+          color: black !important;
+          background: white !important;
+          margin-bottom: 8pt !important;
+          padding-left: 20pt !important;
+        }
+
+        article li {
+          color: black !important;
+          background: white !important;
+          margin-bottom: 4pt !important;
+        }
+
+        /* Hide all UI elements */
+        .no-print {
+          display: none !important;
+        }
+
+        /* Hide buttons, controls, and interactive elements */
+        button,
+        input,
+        select,
+        textarea,
+        .btn,
+        [role="button"],
+        [onclick] {
+          display: none !important;
+        }
+
+        /* Optimize page breaks */
         article {
           page-break-inside: avoid !important;
         }
 
         article p,
         article li,
-        h1, h2, h3 {
+        article h1,
+        article h2,
+        article h3 {
           page-break-inside: avoid !important;
           page-break-after: auto !important;
           page-break-before: auto !important;
         }
 
-        /* Avoid page breaks after headings */
         h1, h2, h3 {
           page-break-after: avoid !important;
         }
 
-        /* Remove any extra spacing that might cause blank pages */
+        /* Remove problematic elements */
         br {
           display: none !important;
         }
 
-        /* Ensure content flows properly */
+        /* Ensure proper box model */
         * {
           box-sizing: border-box !important;
+        }
+
+        /* Remove any transitions or animations */
+        * {
+          transition: none !important;
+          animation: none !important;
+        }
+
+        /* Force print color adjustment */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
         }
       }
 
