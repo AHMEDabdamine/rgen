@@ -2,17 +2,23 @@ import React, { useState, useCallback, useEffect } from "react";
 import { ResearchForm } from "./components/ResearchForm";
 import { ResearchDisplay } from "./components/ResearchDisplay";
 import { HistoryList } from "./components/HistoryList";
+import { Button } from "./components/Button";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { ErrorDisplay } from "./components/ErrorDisplay";
 import {
   generateResearchText,
   extendResearchText,
 } from "./services/geminiService";
 import { ResearchRequest, SavedResearch } from "./types";
-import { Button } from "./components/Button";
+import {
+  formatErrorForDisplay,
+  getErrorSuggestions,
+} from "./utils/errorTranslation";
 
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastError, setLastError] = useState<any>(null);
   const [researchContent, setResearchContent] = useState<string | null>(null);
   const [lastRequest, setLastRequest] = useState<ResearchRequest | null>(null);
   const [history, setHistory] = useState<SavedResearch[]>([]);
@@ -68,7 +74,9 @@ const App: React.FC = () => {
         };
         saveToHistory(newSavedItem);
       } catch (err: any) {
-        setError(err.message || "حدث خطأ أثناء الاتصال بالخدمة");
+        const translatedError = formatErrorForDisplay(err);
+        setError(translatedError);
+        setLastError(err);
       } finally {
         setIsLoading(false);
       }
@@ -98,7 +106,9 @@ const App: React.FC = () => {
       };
       saveToHistory(newSavedItem);
     } catch (err: any) {
-      setError(err.message || "حدث خطأ أثناء توسيع البحث");
+      const translatedError = formatErrorForDisplay(err);
+      setError(translatedError);
+      setLastError(err);
     } finally {
       setIsLoading(false);
     }
@@ -212,26 +222,12 @@ const App: React.FC = () => {
         )}
 
         {error && (
-          <div className="bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 p-4 rounded-xl flex items-center justify-between gap-3 no-print">
-            <div className="flex items-center gap-3">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <p>{error}</p>
-            </div>
-            {!apiKey && (
-              <button
-                onClick={() => setShowSettings(true)}
-                className="text-indigo-600 font-bold underline"
-              >
-                افتح الإعدادات
-              </button>
-            )}
-          </div>
+          <ErrorDisplay
+            error={error}
+            lastError={lastError}
+            onOpenSettings={() => setShowSettings(true)}
+            showSettingsButton={!apiKey}
+          />
         )}
 
         {researchContent && (
