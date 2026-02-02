@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { open } from "@tauri-apps/plugin-shell";
 import { Button } from "./Button";
 
 interface ResearchDisplayProps {
@@ -74,20 +75,33 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({
   const estimatedPrice = calculatePrice(wordCount);
   const pageCount = calculatePageCount(wordCount, fontSize, lineHeight);
 
-  // Initialize print font size when component mounts
+  // Initialize print font size and line height when component mounts
   useEffect(() => {
-    if (typeof window !== "undefined" && (window as any).updatePrintFontSize) {
-      (window as any).updatePrintFontSize(fontSize);
+    if (typeof window !== "undefined") {
+      if ((window as any).updatePrintFontSize) {
+        (window as any).updatePrintFontSize(fontSize);
+      }
+      if ((window as any).updatePrintLineHeight) {
+        (window as any).updatePrintLineHeight(lineHeight);
+      }
     }
-  }, [fontSize]);
+  }, [fontSize, lineHeight]);
 
   const handlePrint = () => {
     window.print();
   };
 
-  const handleImageSearch = () => {
+  const handleImageSearch = async () => {
     const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(topic)}&tbm=isch`;
-    window.open(searchUrl, "_blank");
+
+    try {
+      // Use Tauri's shell API to open in system browser
+      await open(searchUrl);
+    } catch (error) {
+      console.error("Failed to open URL:", error);
+      // Fallback to window.open for web version
+      window.open(searchUrl, "_blank");
+    }
   };
 
   const stripMarkdownSymbols = (text: string): string => {
@@ -382,7 +396,17 @@ export const ResearchDisplay: React.FC<ResearchDisplayProps> = ({
               max="2.5"
               step="0.1"
               value={lineHeight}
-              onChange={(e) => setLineHeight(parseFloat(e.target.value))}
+              onChange={(e) => {
+                const newLineHeight = parseFloat(e.target.value);
+                setLineHeight(newLineHeight);
+                // Update print line height dynamically
+                if (
+                  typeof window !== "undefined" &&
+                  (window as any).updatePrintLineHeight
+                ) {
+                  (window as any).updatePrintLineHeight(newLineHeight);
+                }
+              }}
               className="w-full h-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg appearance-none cursor-pointer accent-indigo-600"
             />
           </div>
